@@ -5,18 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Civaro – Byggmodul (Dark Locked Demo)</title>
   <link rel="icon" href="data:,">
+
+  <!-- Tailwind (CDN) -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       darkMode: "class",
       theme: { extend: {
-        colors: {
-          bgdeep:"#0b1220", plate:"#121a2b", ink:"#e5e7eb",
-          indigo:"#6366f1", emerald:"#10b981"
-        }
+        colors: { bgdeep:"#0b1220", plate:"#121a2b", ink:"#e5e7eb", indigo:"#6366f1", emerald:"#10b981" }
       }}
     };
   </script>
+
+  <!-- Import map för React -->
   <script type="importmap">
   {
     "imports": {
@@ -25,15 +26,264 @@
     }
   }
   </script>
+
+  <!-- Globala libbar -->
   <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas"></script>
+
   <style>
     html,body{height:100%} body{background:#0b1220;color:#e5e7eb}
+    .card{background:#121a2b;border:1px solid #1f2a44;border-radius:1rem;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+    .section{min-height:100vh;scroll-snap-align:start}
   </style>
 </head>
 <body class="dark">
-  <div id="root" class="min-h-screen"></div>
-  <!-- OBS: RELATIV sökväg (Pages ligger under /civaro-info/) -->
-  <script type="module" src="./app.js?v=fix3"></script>
+  <nav class="fixed left-6 top-1/2 -translate-y-1/2 space-y-3 z-50">
+    <a href="#hero" class="block w-2 h-2 rounded-full bg-indigo-500"></a>
+    <a href="#se-swe" class="block w-2 h-2 rounded-full bg-slate-500"></a>
+    <a href="#se-llm" class="block w-2 h-2 rounded-full bg-slate-500"></a>
+    <a href="#se-cost" class="block w-2 h-2 rounded-full bg-slate-500"></a>
+    <a href="#se-heat" class="block w-2 h-2 rounded-full bg-slate-500"></a>
+    <a href="#se-prog" class="block w-2 h-2 rounded-full bg-slate-500"></a>
+    <a href="#se-quotes" class="block w-2 h-2 rounded-full bg-slate-500"></a>
+    <a href="#sources" class="block w-2 h-2 rounded-full bg-slate-500"></a>
+  </nav>
+
+  <main class="snap-y snap-mandatory">
+    <!-- Sektioner mountas av React -->
+    <div id="root"></div>
+  </main>
+
+  <!-- All JS inlines här: -->
+  <script type="module">
+    import React from "react";
+    import { createRoot } from "react-dom/client";
+
+    // --- DATA (samma som tidigare, komprimerat) ---
+    const DATA = {
+      KPI:{handlaggning_dagar:21,kompletteringar_pct:27,automationsgrad_pct:62,nki:4.3,
+           footnote:"Kombinerad modell; demo."},
+      SWEDEN:{usage_pct:40,chatgpt_pct:33,copilot_pct:10,ai_instead_of_google:21,
+              ai_users_google_replace:50,youth_8_19_pct:57,work_use_any_pct:26,white_collar_pct:40,
+              worry_unemployment_pct:33,gender_gap_pct:7,footnote:"Svenskarna och internet 2025."},
+      LLM_CAPABILITY_TIMELINE:[
+        {year:2020,model:"GPT-3 (175B)",mmlu:43.9},
+        {year:2023,model:"GPT-4",mmlu:86.0},
+        {year:2024,model:"Top 2024",mmlu:88.0}
+      ],
+      HUMAN_REFERENCE:[
+        {label:"5-åring (illustration)",mmlu:40},
+        {label:"15-åring (illustration)",mmlu:70},
+        {label:"20-åring (illustration)",mmlu:80},
+        {label:"Expertmänniska ≈",mmlu:89.8}
+      ],
+      TOKEN_COST_TREND:[
+        {date:"2023-01",label:"GPT-4 start",in:30,out:60},
+        {date:"2024-02",label:"3.5 turbo cut",in:15,out:45},
+        {date:"2024-05",label:"4o-mini nivå",in:0.15,out:0.60},
+        {date:"2025-03",label:"trend (mix)",in:0.10,out:0.40},
+        {date:"2025-08",label:"flash-lite nivå",in:0.075,out:0.30}
+      ],
+      HEATMAP:{hours:["08","09","10","11","12","13","14","15","16","17"],
+               reasons:["Situationsplan","Fasadritning","K-intyg","Kontrollplan","Brandskydd"],
+               values:{
+                 "Situationsplan":{"08":12,"09":20,"10":26,"11":18,"12":15,"13":19,"14":23,"15":21,"16":14,"17":9},
+                 "Fasadritning":{"08":8,"09":16,"10":22,"11":24,"12":20,"13":18,"14":16,"15":17,"16":12,"17":7},
+                 "K-intyg":{"08":5,"09":9,"10":14,"11":16,"12":15,"13":12,"14":11,"15":10,"16":8,"17":5},
+                 "Kontrollplan":{"08":7,"09":10,"10":12,"11":15,"12":16,"13":17,"14":18,"15":18,"16":13,"17":8},
+                 "Brandskydd":{"08":3,"09":6,"10":9,"11":12,"12":13,"13":13,"14":12,"15":11,"16":9,"17":6}
+               }},
+      PROGNOSIS:[
+        {year:2025,ai:5,auto:3,lead:10},
+        {year:2027,ai:30,auto:25,lead:40},
+        {year:2030,ai:60,auto:55,lead:65}
+      ],
+      QUOTES:[
+        {author:"Sam Altman (parafras)",text:"AGI förändrar yrkesroller; utmaningen är att omsätta tekniken till nytta."},
+        {author:"Elon Musk (parafras)",text:"Automatisering slår snabbast i standardiserade processer; husproduktion ligger nära."}
+      ],
+      SOURCES:[
+        "Svenskarna och internet 2025 – AI-kapitlet",
+        "Hendrycks et al., MMLU – expert ≈ 89.8 %",
+        "Publika modellpriser 2023–2025 (OpenAI/Google m.fl.)"
+      ]
+    };
+
+    // --- Hjälp: ECharts mountare ---
+    const mountChart = (id, options) => {
+      const el = document.getElementById(id);
+      const chart = echarts.init(el, null, {renderer:"canvas"});
+      chart.setOption(options);
+      window.addEventListener("resize", () => chart.resize());
+      return chart;
+    };
+
+    // --- React-komponent (låst, mörk, sektioner) ---
+    const App = () => {
+      React.useEffect(() => {
+        // LLM-kapacitet
+        mountChart("chart-llm", {
+          backgroundColor:"transparent",
+          tooltip:{trigger:"item"},
+          xAxis:{type:"category", data:DATA.LLM_CAPABILITY_TIMELINE.map(d=>d.year), axisLine:{lineStyle:{color:"#3b4a6b"}}, axisLabel:{color:"#9fb2d6"}},
+          yAxis:{type:"value", min:20, max:95, axisLabel:{color:"#9fb2d6", formatter:"{value}%"},
+                 splitLine:{lineStyle:{color:"#1f2a44"}}},
+          series:[{
+            type:"line",
+            smooth:true,
+            areaStyle:{color:"rgba(99,102,241,.15)"},
+            lineStyle:{color:"#6366f1", width:3},
+            data:DATA.LLM_CAPABILITY_TIMELINE.map(d=>d.mmlu),
+            symbolSize:10
+          },
+          // Åldersband (illustration)
+          ...DATA.HUMAN_REFERENCE.map(ref => ({
+            type:"line",
+            name:ref.label,
+            data:Array(DATA.LLM_CAPABILITY_TIMELINE.length).fill(ref.mmlu),
+            lineStyle:{type:"dashed", color:"#10b981"},
+            symbol:"none"
+          }))
+          ]
+        });
+
+        // Token-kostnad (log)
+        mountChart("chart-cost", {
+          backgroundColor:"transparent",
+          tooltip:{trigger:"axis"},
+          legend:{data:["In","Ut"], textStyle:{color:"#9fb2d6"}},
+          xAxis:{type:"category", data:DATA.TOKEN_COST_TREND.map(d=>d.date), axisLabel:{color:"#9fb2d6"}},
+          yAxis:{type:"log", logBase:10, min:0.05, max:100, axisLabel:{color:"#9fb2d6"}},
+          series:[
+            {name:"In", type:"line", data:DATA.TOKEN_COST_TREND.map(d=>d.in), lineStyle:{color:"#10b981", width:3}},
+            {name:"Ut", type:"line", data:DATA.TOKEN_COST_TREND.map(d=>d.out), lineStyle:{color:"#f59e0b", width:3}}
+          ]
+        });
+
+        // Heatmap
+        const hours = DATA.HEATMAP.hours;
+        const reasons = DATA.HEATMAP.reasons;
+        const values = [];
+        reasons.forEach((r,ri)=>hours.forEach((h,hi)=>values.push([hi,ri,DATA.HEATMAP.values[r][h]])));
+        mountChart("chart-heat", {
+          tooltip:{},
+          xAxis:{type:"category", data:hours, axisLabel:{color:"#9fb2d6"}},
+          yAxis:{type:"category", data:reasons, axisLabel:{color:"#9fb2d6"}},
+          visualMap:{min:0,max:30, calculable:false, orient:"horizontal", left:"center", bottom:0,
+                     inRange:{color:["#0b1220","#3b82f6","#ef4444"]}},
+          series:[{type:"heatmap", data:values, label:{show:false}, emphasis:{itemStyle:{shadowBlur:10}}}]
+        });
+
+        // Prognos
+        mountChart("chart-prog", {
+          tooltip:{trigger:"axis"},
+          legend:{data:["AI-stött bygglov","Auto ritningsgranskning","Ledtid ↓"], textStyle:{color:"#9fb2d6"}},
+          xAxis:{type:"category", data:DATA.PROGNOSIS.map(d=>d.year), axisLabel:{color:"#9fb2d6"}},
+          yAxis:{type:"value", min:0, max:100, axisLabel:{color:"#9fb2d6", formatter:"{value}%"},
+                 splitLine:{lineStyle:{color:"#1f2a44"}}},
+          series:[
+            {name:"AI-stött bygglov", type:"line", data:DATA.PROGNOSIS.map(d=>d.ai), lineStyle:{width:3}},
+            {name:"Auto ritningsgranskning", type:"line", data:DATA.PROGNOSIS.map(d=>d.auto), lineStyle:{width:3}},
+            {name:"Ledtid ↓", type:"line", data:DATA.PROGNOSIS.map(d=>d.lead), lineStyle:{width:3}}
+          ]
+        });
+      }, []);
+
+      const Card = ({title, children, foot}) => (
+        <div class="card p-6">
+          <h3 class="text-xl font-semibold mb-3">{title}</h3>
+          <div>{children}</div>
+          {foot && <p class="mt-3 text-xs text-slate-400">ⓘ {foot}</p>}
+        </div>
+      );
+
+      return (
+        React.createElement(React.Fragment,null,
+          React.createElement("section",{id:"hero",className:"section flex items-center"},
+            React.createElement("div",{className:"max-w-6xl mx-auto px-6 w-full"},
+              React.createElement("h1",{className:"text-4xl md:text-5xl font-bold mb-4"}, "Civaro Byggmodul — låst demo"),
+              React.createElement("p",{className:"text-slate-300 mb-8 max-w-2xl"},
+                "Data-drivet beslutsstöd i bygglov. Mörkt tema, låsta siffror, inga reglage."),
+              React.createElement("div",{className:"grid md:grid-cols-4 gap-6"},
+                React.createElement(Card,{title:"Handläggningstid (dagar)",foot:DATA.KPI.footnote}, React.createElement("div",{className:"text-4xl font-bold"}, DATA.KPI.handlaggning_dagar)),
+                React.createElement(Card,{title:"Kompletteringar",foot:DATA.KPI.footnote}, React.createElement("div",{className:"text-4xl font-bold"}, DATA.KPI.kompletteringar_pct," %")),
+                React.createElement(Card,{title:"Automationsgrad",foot:DATA.KPI.footnote}, React.createElement("div",{className:"text-4xl font-bold"}, DATA.KPI.automationsgrad_pct," %")),
+                React.createElement(Card,{title:"NKI",foot:DATA.KPI.footnote}, React.createElement("div",{className:"text-4xl font-bold"}, DATA.KPI.nki))
+              )
+            )
+          ),
+          React.createElement("section",{id:"se-swe",className:"section flex items-center"},
+            React.createElement("div",{className:"max-w-6xl mx-auto px-6 w-full grid md:grid-cols-2 gap-6"},
+              React.createElement(Card,{title:"Svenskar & AI 2025",foot:DATA.SWEDEN.footnote},
+                React.createElement("ul",{className:"space-y-2 text-slate-300"},
+                  React.createElement("li",null, "AI-användning: ", DATA.SWEDEN.usage_pct, "%"),
+                  React.createElement("li",null, "ChatGPT: ", DATA.SWEDEN.chatgpt_pct, "%"),
+                  React.createElement("li",null, "Copilot: ", DATA.SWEDEN.copilot_pct, "%"),
+                  React.createElement("li",null, "AI istället för Google: ", DATA.SWEDEN.ai_instead_of_google, "% (", DATA.SWEDEN.ai_users_google_replace," % bland AI-användare)"),
+                  React.createElement("li",null, "Unga 8–19 år: ", DATA.SWEDEN.youth_8_19_pct, "%"),
+                  React.createElement("li",null, "Användning på jobbet: ", DATA.SWEDEN.work_use_any_pct, "% (tjänstemän ", DATA.SWEDEN.white_collar_pct," %)"),
+                  React.createElement("li",null, "Oro arbetslöshet: ", DATA.SWEDEN.worry_unemployment_pct, "%, könsgap ", DATA.SWEDEN.gender_gap_pct," p.p.")
+                )
+              )
+            )
+          ),
+          React.createElement("section",{id:"se-llm",className:"section flex items-center"},
+            React.createElement("div",{className:"max-w-6xl mx-auto px-6 w-full"},
+              React.createElement("div",{className:"card p-6"},
+                React.createElement("h3",{className:"text-xl font-semibold mb-3"},"LLM-kapacitet (MMLU %)"),
+                React.createElement("div",{id:"chart-llm",className:"h-80 w-full"})
+              ),
+              React.createElement("p",{className:"mt-3 text-xs text-slate-400"},"ⓘ MMLU = kunskaps-/resonemangstest. Åldersband = illustration, ej IQ.")
+            )
+          ),
+          React.createElement("section",{id:"se-cost",className:"section flex items-center"},
+            React.createElement("div",{className:"max-w-6xl mx-auto px-6 w-full"},
+              React.createElement("div",{className:"card p-6"},
+                React.createElement("h3",{className:"text-xl font-semibold mb-3"},"Token-kostnad (5 år, log-skala)"),
+                React.createElement("div",{id:"chart-cost",className:"h-80 w-full"})
+              ),
+              React.createElement("p",{className:"mt-3 text-xs text-slate-400"},"ⓘ Översiktlig trend baserad på publika prisändringar och jämförelser.")
+            )
+          ),
+          React.createElement("section",{id:"se-heat",className:"section flex items-center"},
+            React.createElement("div",{className:"max-w-6xl mx-auto px-6 w-full"},
+              React.createElement("div",{className:"card p-6"},
+                React.createElement("h3",{className:"text-xl font-semibold mb-3"},"Vanliga kompletteringar (heatmap)"),
+                React.createElement("div",{id:"chart-heat",className:"h-96 w-full"})
+              )
+            )
+          ),
+          React.createElement("section",{id:"se-prog",className:"section flex items-center"},
+            React.createElement("div",{className:"max-w-6xl mx-auto px-6 w-full"},
+              React.createElement("div",{className:"card p-6"},
+                React.createElement("h3",{className:"text-xl font-semibold mb-3"},"Prognos 5 år"),
+                React.createElement("div",{id:"chart-prog",className:"h-80 w-full"})
+              ),
+              React.createElement("p",{className:"mt-3 text-xs text-slate-400"},"ⓘ Illustrativ prognos – byt till kommundata när ni vill.")
+            )
+          ),
+          React.createElement("section",{id:"se-quotes",className:"section flex items-center"},
+            React.createElement("div",{className:"max-w-4xl mx-auto px-6 w-full grid gap-6"},
+              ...DATA.QUOTES.map(q =>
+                React.createElement("div",{className:"card p-6"}, 
+                  React.createElement("div",{className:"text-lg text-slate-200 mb-2"},"“", q.text, "”"),
+                  React.createElement("div",{className:"text-sm text-slate-400"}, q.author)
+                )
+              )
+            )
+          ),
+          React.createElement("section",{id:"sources",className:"section flex items-center"},
+            React.createElement("div",{className:"max-w-4xl mx-auto px-6 w-full card p-6"},
+              React.createElement("h3",{className:"text-xl font-semibold mb-3"},"Källor"),
+              React.createElement("ul",{className:"list-disc pl-6 space-y-2 text-slate-300"}, DATA.SOURCES.map(s=>React.createElement("li",null,s)))
+            )
+          )
+        )
+      );
+    };
+
+    const root = createRoot(document.getElementById("root"));
+    root.render(React.createElement(App));
+  </script>
 </body>
 </html>
