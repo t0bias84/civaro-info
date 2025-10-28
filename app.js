@@ -1,6 +1,8 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 
+const root = createRoot(document.getElementById("root"));
+
 const DATA = {
   // 1) KPI – “låst” demo
   KPI: {
@@ -991,6 +993,7 @@ function App() {
   );
 }
 
+root.render(<App />);
 const root = createRoot(document.getElementById("root"));
 root.render(<App />);
 import React, { useEffect, useMemo, useRef, useState } from "react";

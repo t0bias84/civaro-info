@@ -1,3 +1,52 @@
+<!doctype html>
+<html lang="sv" class="h-full">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Civaro – Byggmodul (Dark Locked Demo)</title>
+
+  <!-- Tailwind (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // Viktigt: detta får INTE ligga i importmap.
+    tailwind.config = {
+      darkMode: "class",
+      theme: { extend: {
+        colors: {
+          plate: "#121a2b",
+          ink: "#e5e7eb",
+          bgdeep: "#0b1220",
+          indigo: "#6366f1",
+          emerald: "#10b981"
+        }
+      }}
+    };
+  </script>
+
+  <!-- Import map för React -->
+  <script type="importmap">
+  {
+    "imports": {
+      "react": "https://esm.sh/react@18",
+      "react-dom/client": "https://esm.sh/react-dom@18/client"
+    }
+  }
+  </script>
+
+  <!-- Globala libbar före app.js -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas"></script>
+
+  <style>
+    html, body { height:100%; }
+    body { background:#0b1220; color:#e5e7eb; }
+  </style>
+</head>
+<body class="dark">
+  <div id="root"></div>
+  <!-- Relativ sökväg (Pages: /civaro-info/), lägg gärna på en cachebust -->
+  <script type="module" src="./app.js?v=deploy1"></script>
+</body>
 <!DOCTYPE html>
 <html lang="sv" class="h-full">
   <head>
