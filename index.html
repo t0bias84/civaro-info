@@ -5,25 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Civaro – Byggmodul (Dark Locked Demo)</title>
 
-  <!-- Tailwind (CDN) -->
+  <!-- Favicon-placeholder (släcker 404) -->
+  <link rel="icon" href="data:,">
+
+  <!-- Tailwind via CDN (OBS: config i EGEN script-tagg, inte i importmap) -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    // Viktigt: detta får INTE ligga i importmap.
     tailwind.config = {
       darkMode: "class",
       theme: { extend: {
         colors: {
-          plate: "#121a2b",
-          ink: "#e5e7eb",
           bgdeep: "#0b1220",
+          plate:  "#121a2b",
+          ink:    "#e5e7eb",
           indigo: "#6366f1",
-          emerald: "#10b981"
+          emerald:"#10b981"
         }
       }}
     };
   </script>
 
-  <!-- Import map för React -->
+  <!-- Importmap: ren JSON, endast imports -->
   <script type="importmap">
   {
     "imports": {
@@ -43,136 +45,9 @@
   </style>
 </head>
 <body class="dark">
-  <div id="root"></div>
-  <!-- Relativ sökväg (Pages: /civaro-info/), lägg gärna på en cachebust -->
-  <script type="module" src="./app.js?v=deploy1"></script>
+  <div id="root" class="min-h-screen"></div>
+
+  <!-- Viktigt: RELATIV sökväg (ligger under /civaro-info/) -->
+  <script type="module" src="./app.js?v=fix2"></script>
 </body>
-<!DOCTYPE html>
-<html lang="sv" class="h-full">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Civaro Byggmodul – Låst Demo</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      html {
-        scroll-behavior: smooth;
-      }
-      html,
-      body {
-        height: 100%;
-      }
-      body {
-        margin: 0;
-        font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-          sans-serif;
-        background-color: #0b1220;
-        color: #e5e7eb;
-      }
-      ::selection {
-        background: rgba(99, 102, 241, 0.35);
-    <title>Civaro Byggmodul Demo</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      body {
-        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      }
-      .fade-in {
-        animation: fadeIn 0.8s ease forwards;
-      }
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(12px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-      .soft-shadow {
-        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
-      }
-      .card-gradient {
-        background: linear-gradient(135deg, rgba(248, 250, 252, 0.9), rgba(237, 242, 255, 0.75));
-      }
-      .future-gradient {
-        background: linear-gradient(180deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.92));
-      }
-      .heat-cell {
-        transition: transform 0.15s ease, box-shadow 0.15s ease;
-      }
-      .heat-cell:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 25px rgba(15, 23, 42, 0.1);
-      }
-    </style>
-    <script type="importmap">
-      {
-        "imports": {
-          "react": "https://esm.sh/react@18",
-          "react-dom/client": "https://esm.sh/react-dom@18/client"
-        }
-      }
-    </script>
-    <script>
-      tailwind = window.tailwind || {};
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              base: "#0b1220",
-              panel: "#121a2b",
-              outline: "#1f2a44",
-              accent: "#6366f1",
-              success: "#10b981"
-            },
-            boxShadow: {
-              glass: "0 25px 60px -20px rgba(15, 23, 42, 0.65)",
-              inner: "inset 0 1px 0 rgba(255,255,255,0.02)"
-      window.tailwind = window.tailwind || {};
-      window.tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              brand: {
-                50: '#f0f9ff',
-                100: '#e0f2fe',
-                200: '#bfdbfe',
-                500: '#2563eb',
-                600: '#1d4ed8',
-                700: '#1e40af'
-              }
-            },
-            boxShadow: {
-              soft: '0 20px 45px rgba(15, 23, 42, 0.08)'
-            }
-          }
-        }
-      };
-    </script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/html2canvas"></script>
-  </head>
-  <body class="h-full">
-    <div id="root" class="h-full"></div>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/html2canvas"></script>
-  </head>
-  <body class="bg-slate-100 text-slate-900 min-h-full">
-    <div id="root" class="min-h-screen"></div>
-    <script type="module" src="./app.js"></script>
-  </body>
 </html>
