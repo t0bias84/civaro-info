@@ -1,12 +1,15 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
+console.log("[civaro-info] app.js loaded");
+
+fetch("./app.js?v=ping", { cache: "no-store" })
+  .then((response) => response.text())
+  .then((text) => console.log("[selfcheck] app.js first20:", text.slice(0, 20)))
+  .catch((error) => console.warn("[selfcheck] fetch app.js failed", error));
 
 // echarts finns globalt: window.echarts
-console.log("app.js loaded");
 const rootEl = document.getElementById("root");
-if (!rootEl) {
-  throw new Error("Root element not found");
-}
+if (!rootEl) throw new Error("Root element not found");
 rootEl.innerHTML = "";
 const root = createRoot(rootEl);
 

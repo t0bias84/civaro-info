@@ -4,28 +4,19 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Civaro – Byggmodul (Dark Locked Demo)</title>
-
-  <!-- Favicon-placeholder (släcker 404) -->
   <link rel="icon" href="data:,">
-
-  <!-- Tailwind via CDN (OBS: config i EGEN script-tagg, inte i importmap) -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       darkMode: "class",
       theme: { extend: {
         colors: {
-          bgdeep: "#0b1220",
-          plate:  "#121a2b",
-          ink:    "#e5e7eb",
-          indigo: "#6366f1",
-          emerald:"#10b981"
+          bgdeep:"#0b1220", plate:"#121a2b", ink:"#e5e7eb",
+          indigo:"#6366f1", emerald:"#10b981"
         }
       }}
     };
   </script>
-
-  <!-- Importmap: ren JSON, endast imports -->
   <script type="importmap">
   {
     "imports": {
@@ -34,20 +25,15 @@
     }
   }
   </script>
-
-  <!-- Globala libbar före app.js -->
   <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas"></script>
-
   <style>
-    html, body { height:100%; }
-    body { background:#0b1220; color:#e5e7eb; }
+    html,body{height:100%} body{background:#0b1220;color:#e5e7eb}
   </style>
 </head>
 <body class="dark">
   <div id="root" class="min-h-screen"></div>
-
-  <!-- Viktigt: RELATIV sökväg (ligger under /civaro-info/) -->
-  <script type="module" src="./app.js?v=fix2"></script>
+  <!-- OBS: RELATIV sökväg (Pages ligger under /civaro-info/) -->
+  <script type="module" src="./app.js?v=fix3"></script>
 </body>
 </html>
